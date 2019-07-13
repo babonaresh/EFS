@@ -75,7 +75,7 @@ def stock_edit(request, pk):
            # stock.customer = stock.id
            stock.updated_date = timezone.now()
            stock.save()
-           stocks = Stock.objects.filter(created_date__lte=timezone.now())
+           stocks = Stock.objects.filter(purchase_date__lte=timezone.now())
            return render(request, 'portfolio/stock_list.html', {'stocks': stocks})
    else:
        # print("else")
