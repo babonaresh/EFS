@@ -17,4 +17,7 @@ urlpatterns = [
     path('investment/create/', views.investment_new, name='investment_new'),
     path('investment/<int:pk>/edit/', views.investment_edit, name='investment_edit'),
     path('investment/<int:pk>/delete/', views.investment_delete, name='investment_delete'),
+    path('customer/<int:pk>/summary/', views.summary, name='summary'),
+    #url(r'^customer/<int:pk>/pdf/$',GeneratePDF.as_view(),name='report'),
+    path('customer/<int:pk>/pdf/', views.admin_summary_pdf, name='admin_summary_pdf'),
 ]

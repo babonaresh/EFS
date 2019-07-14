@@ -8,6 +8,12 @@ from django.shortcuts import render, get_object_or_404
 from django.shortcuts import redirect
 from django.contrib.auth.decorators import login_required
 
+from django.http import HttpResponse
+from django.views.generic import View
+from .utils import render_to_pdf
+from django.template.loader import get_template
+from django.db.models import Sum
+
 ow = timezone.now()
 def home(request):
    return render(request, 'portfolio/home.html',
@@ -110,6 +116,22 @@ def investment_new(request):
        # print("Else")
    return render(request, 'portfolio/investment_new.html', {'form': form})
 
+
+@login_required
+def summary(request, pk):
+    customer = get_object_or_404(Customer, pk=pk)
+    customers = Customer.objects.filter(created_date__lte=timezone.now())
+    investments = Investment.objects.filter(customer=pk)
+    stocks = Stock.objects.filter(customer=pk)
+    sum_investment = Investment.objects.filter(customer=pk).aggregate(Sum('acquired_value'))
+    sum_stocks = Stock.objects.filter(customer=pk).aggregate(Sum('shares'))
+    return render(request, 'portfolio/summary.html',{'investments': investments, 'customer': customer,
+                                                        'stocks': stocks,
+                                                            'sum_investment': sum_investment,
+                                                                'sum_stocks': sum_stocks, })
+
+
+
 @login_required
 def investment_edit(request, pk):
     investment = get_object_or_404(Investment, pk=pk)
@@ -132,3 +154,48 @@ def investment_delete(request, pk):
     investment.delete()
     #investments = Investment.objects.filter(acquired_date__lte=timezone.now())
     return redirect('portfolio:investment_list')
+
+
+@login_required()
+def admin_summary_pdf(request, pk):
+        template = get_template('portfolio/pdf.html')
+        customer = get_object_or_404(Customer, pk=pk)
+        customers = Customer.objects.filter(created_date__lte=timezone.now())
+        investments = Investment.objects.filter(customer=pk)
+        stocks = Stock.objects.filter(customer=pk)
+        sum_investment = Investment.objects.filter(customer=pk).aggregate(Sum('acquired_value'))
+        sum_stocks = Stock.objects.filter(customer=pk).aggregate(Sum('shares'))
+        context = {'investments': investments, 'customer': customer,
+                   'stocks': stocks,
+                   'sum_investment': sum_investment,
+                   'sum_stocks': sum_stocks, }
+        html = template.render(context)
+
+        # 'email_success': email_success})
+        pdf = render_to_pdf('portfolio/pdf.html', context)
+        if pdf:
+            response = HttpResponse(pdf, content_type='application/pdf')
+            filename = 'Summary_' + str(customer.name) + '.pdf'
+            content = "inline; filename='%s'" % (filename)
+            download = request.GET.get("download")
+            if download:
+                content = "attachment; filename='%s'" % (filename)
+            response['Content-Disposition'] = content
+            return response
+        return HttpResponse("not found")
+
+
+@login_required
+def generate_summary_pdf(request, pk, context):
+    customer = get_object_or_404(Customer, pk=pk)
+    template = get_template('portfolio/pdf.html')
+
+    html = template.render(context)
+    pdf = render_to_pdf('portfolio/pdf.html', context)
+    if pdf:
+        response = HttpResponse(pdf, content_type='application/pdf')
+        response['Content-Disposition'] = 'filename= "summary_{}.pdf"'.format(customer.name)
+        # return response
+        # return HttpResponse(pdf, content_type='application/octet-stream')
+        return pdf
+    return HttpResponse("Not Found")

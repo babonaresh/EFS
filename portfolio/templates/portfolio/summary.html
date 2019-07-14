@@ -1,0 +1,134 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+{% extends 'portfolio/base.html' %}
+{% block content %}
+{% load mathfilters %}
+{% load humanize %}
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-10 col-md-offset-1">
+            <div class="panel panel-primary">
+                <div class="panel-heading">Welcome!</div>
+                <div class="panel-body">
+                    Eagle Financial Services
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <h1 style="padding-left: 15Px">Customer Summary</h1>
+
+</div>
+<div class="row">
+        <h2 style="padding-left: 15Px">Customer Total</h2>
+    </div>
+ <table class="table table-striped table-bordered table-hover">
+        <thead>
+            <tr class="bg-info">
+                <th>Total of Investmenst and Stocks </th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+
+
+
+                <td> {% load l10n %}
+
+                     {% localize on %}
+                    {{sum_investment.acquired_value__sum|add:sum_stocks.shares__sum | intcomma}}</td>
+                    {% endlocalize %}
+            </tr>
+        </tbody>
+    </table>
+
+    <div class="row">
+        <h2 style="padding-left: 15Px">INVESTMENST MADE </h2>
+    </div>
+    <div class="row">
+        <table class="table table-striped table-bordered table-hover">
+            <thead>
+            <tr class="bg-info">
+               <th>Customer </th>
+                <th>Category</th>
+                <th>Description</th>
+                <th>Acquired Value</th>
+                <th>Acquired Date</th>
+                <th>Recent Value</th>
+                <th>Recent Date</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for investment in investments %}
+                <tr>
+                    <td>{{ investment.customer }}</td>
+                    <td>{{ investment.category }}</td>
+                    <td>{{ investment.description }}</td>
+                    <td>{{ investment.acquired_value }}</td>
+                    <td>{{ investment.acquired_date }}</td>
+                    <td>{{ investment.recent_value }}</td>
+                    <td>{{investment.recent_date}}</td>
+
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+        <table class="table table-striped table-bordered table-hover">
+        <thead>
+            <tr class="bg-info">
+                <th>Total of Investments</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+               <td>{{ sum_investment.acquired_value__sum|intcomma }}</td>
+
+            </tr>
+        </tbody>
+    </table>
+
+ <div class="row">
+        <h2 style="padding-left: 15Px">STOCKS OWNED</h2>
+    </div>
+    <div class="row">
+        <table class="table table-striped table-bordered table-hover">
+            <thead>
+
+                <th>Symbol</th>
+                <th>Name</th>
+                <th>Shares</th>
+                <th>Purchase Price</th>
+                <th>Purchase Date</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for stock in stocks %}
+                <tr>
+                    <td>{{ stock.symbol }}</td>
+                    <td>{{ stock.name }}</td>
+                    <td>{{ stock.shares }}</td>
+                    <td>{{ stock.purchase_price }}</td>
+                    <td>{{ stock.purchase_date }}</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+        <table class="table table-striped table-bordered table-hover">
+        <thead>
+            <tr class="bg-info">
+                <th>Total of Stocks Purchased</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>{{ sum_stocks.shares__sum|intcomma }}</td>
+
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+{% endblock %}
