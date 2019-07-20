@@ -31,13 +31,13 @@ ALLOWED_HOSTS = ['*']
 # Application definition
 
 INSTALLED_APPS = [
+    'portfolio',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'portfolio',
     'crispy_forms',
     'mathfilters',
     'django.contrib.humanize',
@@ -56,6 +56,13 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = 'efs.urls'
+
+
+EMAIL_HOST = 'smtp.gmail.com' # mail service smtp
+EMAIL_HOST_USER = 'mytrip.plannerapp' # email id
+EMAIL_HOST_PASSWORD = 'isqa8380t4' #password
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
 
 TEMPLATES = [
     {

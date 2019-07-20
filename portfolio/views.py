@@ -3,7 +3,8 @@ from django.shortcuts import render
 # Create your views here.
 from django.shortcuts import render
 from .models import *
-from .forms import *
+from .forms import*
+from .forms import LoginForm,UserRegistrationForm
 from django.shortcuts import render, get_object_or_404
 from django.shortcuts import redirect
 from django.contrib.auth.decorators import login_required
@@ -302,3 +303,20 @@ def generate_portfolio_pdf(request, pk, context):
         # return HttpResponse(pdf, content_type='application/octet-stream')
         return pdf
     return HttpResponse("Not Found")
+
+
+def register(request):
+    if request.method == 'POST':
+        user_form = UserRegistrationForm(request.POST)
+        if user_form.is_valid():
+            # Create a new user object but avoid saving it yet
+            new_user = user_form.save(commit=False)
+            # Set the chosen password
+            new_user.set_password(
+            user_form.cleaned_data['password'])
+            # Save the User object
+            new_user.save()
+            return render(request, 'portfolio/register_done.html', {'new_user': new_user})
+    else:
+        user_form = UserRegistrationForm()
+    return render(request, 'portfolio/register.html', {'user_form': user_form})

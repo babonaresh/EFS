@@ -10,7 +10,18 @@
     <form method="post" action="{% url 'login' %}">
         {{ form|crispy }}
         {% csrf_token %}
+</div>
+                    <div class="form-check">
+                        <div class="row">
+                            <button type="submit" class="btn btn-login" >Login</button>
 
+                        </div>
+                        <br>
+                        <div class="row">
+                        <button class="btn btn-login"><a style="color:#0C0B4D " href="{% url 'portfolio:password_reset' %}">Forgotten your password?</a></button>
+                        </div>
+                        <br>
+                        <p style="color: #0C0B4D">  If you don't have an account <a href="{% url 'portfolio:register' %}">Sign Up Here</a></p>
 
         <input type="submit" value="login"/>
         <input type="hidden" name="next" value="{{ next }}"/>

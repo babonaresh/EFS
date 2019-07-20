@@ -1,0 +1,25 @@
+
+
+<head>
+    <link href="../../static/css/glyphicons.css">
+    <link href="../../static/css/portfolio.css">
+    <link href="../../static/css/font-awesome.css">
+    <link href="../../static/css/font-awesome.min.css">
+    <link href="../../static/css/bootstrap.min.css">
+</head>
+{% extends "portfolio/base.html" %}
+{% load crispy_forms_tags %}
+{% block content %}
+
+    <section class="login-block">
+    <div class="container">
+
+    <h1>Congratulations {{ new_user.first_name }}!</h1>
+
+        <h4>Your account has been successfully created. Now you can Login.</h4>
+        <button class="button" style="vertical-align:middle; width: 50px; height: 20px"><a href="{% url 'login' %}"><span> Login </span></a></button>
+
+    </div>
+</section>
+
+{% endblock %}

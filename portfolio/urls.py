@@ -2,6 +2,7 @@ from django.conf.urls import url
 from . import views
 from django.urls import path
 from rest_framework.urlpatterns import format_suffix_patterns
+from django.contrib.auth.views import password_change as pwd_change, password_change_done as pwd_change_done, password_reset as reset, password_reset_done as reset_done, password_reset_confirm as reset_confirm, password_reset_complete as reset_complete
 
 
 app_name = 'portfolio'
@@ -27,6 +28,17 @@ urlpatterns = [
     #path('customer/<int:pk>/portfolio/', views.portfolio, name='portfolio'),
     #url(r'^customer/<int:pk>/pdf/$',GeneratePDF.as_view(),name='report'),
     path('customer/<int:pk>/portfoliopdf/', views.admin_portfolio_pdf, name='admin_portfolio_pdf'),
-
+    #login signup and registration
+    #url(r'^home/$', views.home, name='home'),
+    url(r'^register/$', views.register, name='register'),
+    url('^password-change/done/$', pwd_change_done, name='password_change_done'),
+    url('^password-change/$', pwd_change, {'post_change_redirect': '/password-change/done/'}, name='password_change'),
+    url(r'^password-reset/complete/$', reset_complete, name='password_reset_complete'),
+    url(r'^password-reset/confirm/(?P<uidb64>[-\w]+)/(?P<token>[-\w]+)/$', reset_confirm,
+        {'post_reset_redirect': '/password-reset/complete/'}, name='password_reset_confirm'),
+    url(r'^password-reset/done/$', reset_done, name='password_reset_done'),
+    url(r'^password-reset/$', reset, {'post_reset_redirect': '/password-reset/done/',
+                                      'email_template_name': 'registration/password_reset_email.html'},
+        name='password_reset'),
 ]
 urlpatterns = format_suffix_patterns(urlpatterns)
