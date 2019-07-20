@@ -240,3 +240,65 @@ class CustomerList(APIView):
         customers_json = Customer.objects.all()
         serializer = CustomerSerializer(customers_json, many=True)
         return Response(serializer.data)
+
+
+@login_required()
+def admin_portfolio_pdf(request, pk):
+        template = get_template('portfolio/portfoliopdf.html')
+        customer = get_object_or_404(Customer, pk=pk)
+        customers = Customer.objects.filter(created_date__lte=timezone.now())
+        investments = Investment.objects.filter(customer=pk)
+        stocks = Stock.objects.filter(customer=pk)
+        #sum_investment = Investment.objects.filter(customer=pk).aggregate(Sum('acquired_value'))
+        #sum_stocks = Stock.objects.filter(customer=pk).aggregate(Sum('shares'))
+        sum_recent_value = Investment.objects.filter(customer=pk).aggregate(Sum('recent_value'))
+        sum_acquired_value = Investment.objects.filter(customer=pk).aggregate(Sum('acquired_value'))
+        # overall_investment_results = sum_recent_value-sum_acquired_value
+        # Initialize the value of the stocks
+        sum_current_stocks_value = 0
+        sum_of_initial_stock_value = 0
+
+        # Loop through each stock and add the value to the total
+        for stock in stocks:
+            sum_current_stocks_value += stock.current_stock_value()
+            sum_of_initial_stock_value += stock.initial_stock_value()
+
+        context = {'investments': investments, 'customer': customer,
+                   'stocks': stocks,
+                   'sum_acquired_value': sum_acquired_value,
+                   'sum_recent_value': sum_recent_value,
+                   'sum_current_stocks_value': sum_current_stocks_value,
+                   'sum_of_initial_stock_value': sum_of_initial_stock_value,
+
+        }
+
+        html = template.render(context)
+
+        # 'email_success': email_success})
+        pdf = render_to_pdf('portfolio/portfoliopdf.html', context)
+        if pdf:
+            response = HttpResponse(pdf, content_type='application/portfoliopdf')
+            filename = 'Summary_' + str(customer.name) + '.pdf'
+            content = "inline; filename='%s'" % (filename)
+            download = request.GET.get("download")
+            if download:
+                content = "attachment; filename='%s'" % (filename)
+            response['Content-Disposition'] = content
+            return response
+        return HttpResponse("not found")
+
+
+@login_required
+def generate_portfolio_pdf(request, pk, context):
+    customer = get_object_or_404(Customer, pk=pk)
+    template = get_template('portfolio/portfoliopdf.html')
+
+    html = template.render(context)
+    pdf = render_to_pdf('portfolio/portfoliopdf.html', context)
+    if pdf:
+        response = HttpResponse(pdf, content_type='application/portfoliopdf')
+        response['Content-Disposition'] = 'filename= "summary_{}.pdf"'.format(customer.name)
+        # return response
+        # return HttpResponse(pdf, content_type='application/octet-stream')
+        return pdf
+    return HttpResponse("Not Found")

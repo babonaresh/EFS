@@ -42,7 +42,7 @@
                 <th>Zip</th>
                 <th>Primary Email</th>
                 <th>Cell Phone</th>
-                <th colspan="5">Actions</th>
+                <th colspan="6">Actions</th>
             </tr>
             </thead>
             <tbody>
@@ -72,6 +72,9 @@
 
                    <td><a href="{% url 'portfolio:portfolio' pk=customer.pk %}"
                           class="btn btn-primary">Portfolio</a></td>
+                     <td><a href="{% url 'portfolio:admin_portfolio_pdf' pk=customer.pk %}"
+                           class="btn btn-primary">Generate Portfolio PDF</a>
+                    </td>
 
 
                 </tr>
