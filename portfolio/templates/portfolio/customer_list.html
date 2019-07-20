@@ -70,8 +70,9 @@
                            class="btn btn-primary">Generate PDF</a>
                     </td>
 
-                    <td><a href=""
-                           class="btn btn-primary">Portfolio</a>
+                   <td><a href="{% url 'portfolio:portfolio' pk=customer.pk %}"
+                          class="btn btn-primary">Portfolio</a></td>
+
 
                 </tr>
             {% endfor %}
