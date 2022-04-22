@@ -10,7 +10,7 @@ requests==2.19.1
 whitenoise==4.1
 django-mathfilters==0.4.0
 xhtml2pdf==0.2.3
-PyPDF2==1.26.0
+PyPDF2==1.27.5
 django-mathfilters==0.4.0
 html5lib==1.0.1
 urllib3==1.23
